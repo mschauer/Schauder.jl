@@ -73,7 +73,7 @@
 #%
 import Base.reverse!, Base.strides
 
-#using Winston
+using Winston
 using Distributions
 normalcdf(x) = 0.5 + 0.5erf(x/sqrt(2))
 normalquant(p) = sqrt(2)*erfinv(2*p-1)
@@ -471,6 +471,7 @@ end
 
 function spickupSigma!(Sigma, L)
     K = 0
+    nlgap = 0
     n = len(L, K)
     for i in 2:2:n # bring into alternating format
         Sigma[2, i], Sigma[1, i] = Sigma[1, i], Sigma[2, i]
@@ -1118,15 +1119,15 @@ function bayes(L)
     a0 = 7/2
     b0 = 7/2 #and on si[i]
     T = 1.
-    K = 200
-#    f(t) = 2sin(2pi ./(0.9t +.1)) #- 4hat(2t-1)
-    f(t) = 2sin(4pi*t)
+    K = 1000
+    f(t) = t .*2sin(2pi ./(0.9t +.1)) #- 4hat(2t-1)
+#    f(t) = 2sin(4pi*t)
     tt = linspace(0, T, K)
-    sitrue = 2.
+    sitrue = 1.
     X = f(tt) + sitrue*randn(K)
     #L = 7
     n = L2n(L)
-    si = 2.
+    si = 0.5
     si0 = ones(L)
     mu = mureg(tt, X, 1., L);
     mubar = fetransf(f,0,1,7);
